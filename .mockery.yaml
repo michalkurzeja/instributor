@@ -1,0 +1,10 @@
+log-level: "warn"
+all: true
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: "mocks"
+filename: "{{.InterfaceName | snakecase}}.go"
+mockname: "{{.InterfaceName}}"
+packages:
+  github.com/michalkurzeja/instributor:
+    config:
+      recursive: True
