@@ -51,7 +51,7 @@ func (i *instributor) Acquire(ctx context.Context) (string, error) {
 	err = i.queries.watchPool(ctx, i.redis, func(tx *redis.Tx) error {
 		key, err = i.queries.findReleasedKey(ctx, tx, i.releasedScore())
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to find released key: %v", err)
 		}
 
 		if key == "" {
@@ -61,9 +61,13 @@ func (i *instributor) Acquire(ctx context.Context) (string, error) {
 		_, err = tx.TxPipelined(ctx, func(pipe redis.Pipeliner) error {
 			err := i.queries.upsertKey(ctx, pipe, key, i.acquiredScore())
 			if err != nil {
-				return err
+				return fmt.Errorf("failed to upsert key: %v", err)
 			}
-			return i.queries.expireKeys(ctx, pipe, i.expiredScore())
+			err = i.queries.expireKeys(ctx, pipe, i.expiredScore())
+			if err != nil {
+				return fmt.Errorf("failed to expire keys: %v", err)
+			}
+			return nil
 		})
 		return err
 	})
