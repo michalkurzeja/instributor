@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/michalkurzeja/go-clock"
-	"github.com/redis/go-redis/v9"
 )
 
 type Instributor interface {
@@ -224,7 +224,7 @@ func (q queries) findReleasedKey(ctx context.Context, r redis.Cmdable, releasedS
 }
 
 func (q queries) upsertKey(ctx context.Context, r redis.Cmdable, key string, acquiredScore int64) error {
-	return r.ZAdd(ctx, q.poolKey, redis.Z{Member: key, Score: float64(acquiredScore)}).Err()
+	return r.ZAdd(ctx, q.poolKey, &redis.Z{Member: key, Score: float64(acquiredScore)}).Err()
 }
 
 func (q queries) updateKey(ctx context.Context, r redis.Cmdable, key string, score int64) error {
