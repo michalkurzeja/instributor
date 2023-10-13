@@ -4,8 +4,8 @@ go 1.21.1
 
 require (
 	github.com/alicebob/miniredis/v2 v2.31.0
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/michalkurzeja/go-clock v1.0.2
-	github.com/redis/go-redis/v9 v9.2.1
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/sync v0.4.0
 )
