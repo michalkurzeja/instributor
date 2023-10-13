@@ -26,6 +26,10 @@ func NewRunner(inst Instributor, config RunnerConfig) *Runner {
 }
 
 func (r *Runner) Start(ctx context.Context) error {
+	return r.StartNotify(ctx, make(chan struct{}))
+}
+
+func (r *Runner) StartNotify(ctx context.Context, started chan<- struct{}) error {
 	ticker := clock.Ticker(r.conf.RefreshInterval)
 	defer ticker.Stop()
 
@@ -36,6 +40,8 @@ func (r *Runner) Start(ctx context.Context) error {
 
 	r.setKey(key)
 	defer r.setKey("")
+
+	close(started)
 
 	for {
 		select {
